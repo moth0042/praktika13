@@ -9,6 +9,7 @@ cur.execute('''CREATE TABLE IF NOT EXISTS Users (
             email TEXT NOT NULL,
             age INTEGER)''')
 
+cur.execute('CREATE INDEX IF NOT EXISTS idx_email ON Users(email)')
 
 
 
