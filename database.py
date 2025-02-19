@@ -16,18 +16,39 @@ cur.execute('''INSERT INTO Users (username, email, age) VALUES ('newuser', 'newu
 cur.execute('''UPDATE Users SET age = 29 WHERE username = "newuser"''')
 
 cur.execute('''DELETE FROM Users WHERE username = "newuser"''')
+cur.execute('''DELETE FROM Users''')
 
 cur.execute('''INSERT INTO Users (username, email, age) VALUES ('newuser', 'newuser@example.com', 28)''')
 cur.execute('''INSERT INTO Users (username, email, age) VALUES ('newuser2', 'newuser2@example.com', 24)''')
 cur.execute('''INSERT INTO Users (username, email, age) VALUES ('newuser3', 'newuser3@example.com', 19)''')
+cur.execute('''INSERT INTO Users (username, email, age) VALUES ('moth0042', 'moth0042@example.com', 42)''')
+cur.execute('''INSERT INTO Users (username, email, age) VALUES ('aerty', 'aerty@example.com', 22)''')
+cur.execute('''INSERT INTO Users (username, email, age) VALUES ('user45', 'usr4555@example.com', 33)''')
 
 cur.execute('SELECT * FROM Users')
 users = cur.fetchall()
 for user in users:
     print(user)
 
+cur.execute('SELECT username, age FROM Users WHERE age > 25')
+users = cur.fetchall()
+for user in users:
+    print(user)
 
+cur.execute('SELECT age, AVG(age) as average_age FROM Users GROUP BY age')
+users = cur.fetchall()
+for user in users:
+    print(user)
 
+cur.execute('SELECT age, AVG(age) as average_age FROM Users GROUP BY age HAVING AVG(age) > 30')
+users = cur.fetchall()
+for user in users:
+    print(user)
+
+cur.execute('SELECT username, age FROM Users ORDER BY age DESC')
+users = cur.fetchall()
+for user in users:
+    print(user)
 
 
 
