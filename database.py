@@ -13,7 +13,7 @@ cur.execute('CREATE INDEX IF NOT EXISTS idx_email ON Users(email)')
 
 cur.execute('''INSERT INTO Users (username, email, age) VALUES ('newuser', 'newuser@example.com', 28)''')
 
-
+cur.execute('''UPDATE Users SET age = 29 WHERE username = "newuser"''')
 
 
 
@@ -21,3 +21,8 @@ cur.execute('''INSERT INTO Users (username, email, age) VALUES ('newuser', 'newu
 
 con.commit()
 con.close()
+
+cur.execute('SELECT * FROM Users')
+users = cur.fetchall()
+for user in users:
+    print(user)
