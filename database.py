@@ -55,6 +55,27 @@ users = cur.fetchall()
 for user in users:
     print(user)
 
+
+cur.execute('SELECT COUNT(*) FROM Users')
+n = cur.fetchone()[0]
+print('users count: ', n)
+
+cur.execute('SELECT SUM(age) FROM Users')
+n = cur.fetchone()[0]
+print('users ages sum : ', n)
+
+cur.execute('SELECT AVG(age) FROM Users')
+n = cur.fetchone()[0]
+print('average user age: ', n)
+
+cur.execute('SELECT MIN(age) FROM Users')
+n = cur.fetchone()[0]
+print('min user age: ', n)
+
+cur.execute('SELECT MAX(age) FROM Users')
+n = cur.fetchone()[0]
+print('max user age: ', n)
+
 con.commit()
 con.close()
 
