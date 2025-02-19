@@ -11,6 +11,11 @@ cur.execute('''CREATE TABLE IF NOT EXISTS Users (
 
 cur.execute('CREATE INDEX IF NOT EXISTS idx_email ON Users(email)')
 
+cur.execute('''INSERT INTO Users (username, email, age) VALUES ('newuser', 'newuser@example.com', 28)''')
+
+
+
+
 
 
 
