@@ -15,6 +15,7 @@ cur.execute('''INSERT INTO Users (username, email, age) VALUES ('newuser', 'newu
 
 cur.execute('''UPDATE Users SET age = 29 WHERE username = "newuser"''')
 
+cur.execute('''DELETE FROM Users WHERE username = "newuser"''')
 
 
 
