@@ -17,13 +17,21 @@ cur.execute('''UPDATE Users SET age = 29 WHERE username = "newuser"''')
 
 cur.execute('''DELETE FROM Users WHERE username = "newuser"''')
 
+cur.execute('''INSERT INTO Users (username, email, age) VALUES ('newuser', 'newuser@example.com', 28)''')
+cur.execute('''INSERT INTO Users (username, email, age) VALUES ('newuser2', 'newuser2@example.com', 24)''')
+cur.execute('''INSERT INTO Users (username, email, age) VALUES ('newuser3', 'newuser3@example.com', 19)''')
+
+cur.execute('SELECT * FROM Users')
+users = cur.fetchall()
+for user in users:
+    print(user)
+
+
+
 
 
 
 con.commit()
 con.close()
 
-cur.execute('SELECT * FROM Users')
-users = cur.fetchall()
-for user in users:
-    print(user)
+
