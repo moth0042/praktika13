@@ -12,6 +12,10 @@ for name in res.fetchall():
     tablesnames.append(name)
 
 def tables():
+    for row in tree.get_children():
+        tree.delete(row)
+    tree['columns'] = []
+    tree.heading("#0", text="", anchor=tk.W)
     name = selector.get()
     cur.execute(f"SELECT * FROM {name}")
     rows = cur.fetchall()
