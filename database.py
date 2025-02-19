@@ -82,6 +82,14 @@ users = cur.fetchall()
 for user in users:
     print(user)
 
+
+cur.execute('SELECT * FROM Users')
+users = cur.fetchall()
+print('результаты списком кортежей')
+for user in users:
+    print(user)
+
+
 con.commit()
 con.close()
 
