@@ -76,6 +76,12 @@ cur.execute('SELECT MAX(age) FROM Users')
 n = cur.fetchone()[0]
 print('max user age: ', n)
 
+
+cur.execute('SELECT username, age FROM Users WHERE age = (SELECT MAX(age) FROM Users)')
+users = cur.fetchall()
+for user in users:
+    print(user)
+
 con.commit()
 con.close()
 
