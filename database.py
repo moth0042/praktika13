@@ -50,7 +50,10 @@ users = cur.fetchall()
 for user in users:
     print(user)
 
-
+cur.execute('SELECT age, AVG(age) as average_age FROM Users GROUP BY age HAVING AVG(age) > 30 ORDER BY age DESC')
+users = cur.fetchall()
+for user in users:
+    print(user)
 
 con.commit()
 con.close()
