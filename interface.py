@@ -2,14 +2,15 @@ import tkinter as tk
 from tkinter import ttk, messagebox
 import sqlite3
 
-connection = sqlite3.connect('Flight.db')
+connection = sqlite3.connect('fairytale.db')
 cur = connection.cursor()
 
 res = cur.execute("SELECT name FROM sqlite_master WHERE type='table';")
 tablesnames = []
 for name in res.fetchall():
-    print(name[0])
-    tablesnames.append(name)
+    if name[0] != 'sqlite_sequence':
+        print(name[0])
+        tablesnames.append(name)
 
 def tables():
     for row in tree.get_children():

@@ -1,0 +1,131 @@
+PRAGMA foreign_keys = ON;
+
+
+CREATE TABLE books (
+  id_book INTEGER PRIMARY KEY AUTOINCREMENT,
+  book_name TEXT NOT NULL,
+  publisher TEXT NOT NULL,
+  author TEXT NOT NULL,
+  publ_year INTEGER NOT NULL,
+  price REAL NOT NULL
+);
+
+CREATE TABLE clients (
+  id_client INTEGER PRIMARY KEY AUTOINCREMENT,
+  firm_name TEXT NOT NULL,
+  city TEXT NOT NULL,
+  discount INTEGER
+);
+
+CREATE TABLE orders (
+  id_order INTEGER PRIMARY KEY AUTOINCREMENT,
+  id_book INTEGER NOT NULL,
+  id_client INTEGER NOT NULL,
+  amount INTEGER NOT NULL,
+  order_date TEXT NOT NULL,
+  FOREIGN KEY (id_book) REFERENCES books (id_book) ON DELETE CASCADE ON UPDATE NO ACTION,
+  FOREIGN KEY (id_client) REFERENCES clients (id_client) ON DELETE CASCADE ON UPDATE NO ACTION
+);
+
+
+
+
+INSERT INTO books (book_name, publisher, author, publ_year, price) VALUES
+('Голубой вагон', 'АСТ', 'Эдуард Успенский', 2024, 400.0),
+('Попался, который кусался', 'АСТ', 'Григорий Остер', 2024, 350.0),
+('Роем, грузим, строим. Мир больших машин: истории, которые оживают!', 'Альпина Дети', 'Кённеке Оле', 2024, 500.0),
+('Малыш и Карлсон, который живет на крыше', 'Махаон', 'Астрид Линдгрен', 2023, 800.0),
+('Волшебник Изумрудного города', 'Росмэн', 'Александр Волков', 2022, 540.0),
+('Великие путешествия. Детская энциклопедия', 'МИФ', 'Елена Качур', 2023, 300.0),
+('Путешествие к динозаврам. Сказки с иллюстрациями для детей', 'Росмэн', 'Джеральд Даррел', 2022, 459.0),
+('Приключения Незнайки и его друзей', 'Махаон', 'Николай Носов', 2020, 444.0),
+('Пушкин А. Сказки. Великие сказочники мира', 'Росмэн', 'Александр Пушкин', 2021, 695.99),
+('Мышонок Тим. Новогодняя книга', 'Росмэн', 'Казалис Анна', 2022, 499.99),
+('Три огонька', 'Гудвин', 'Мария Рамос', 2024, 1061.99),
+('Денискины рассказы', 'Махаон', 'Виктор Драгунский', 2024, 299.99),
+('Рождество в домике Петсона', 'Белая ворона', 'Свен Нурдквист', 2022, 699.0),
+('Маленький принц', 'Эксмодетство', 'Антуан де Сент-Экзюпери', 2024, 400.0),
+('Книжки-картинки. Крошка Венди и дом на дереве', 'Clever', 'Стив Ричардсон', 2020, 340.99),
+('Мэри Поппинс', 'Росмэн', 'Памела Трэверс', 2024, 489.99),
+('Большая книга Почему?', 'Махаон', 'Макмиллан Макмиллан', 2024, 700.99),
+('История, конца которой нет', 'Махаон', 'Энде Михаэль Андреас Гельмут', 2023, 1499.99),
+('Тайна Сырной улицы. Детский детектив', 'Феникс-Премьер', 'Анастасия Пикина', 2023, 432.99),
+('Лев, колдунья и платяной шкаф', 'Эксмодетство', 'Льюис Клайв Стейплз', 2024, 456.99);
+
+
+INSERT INTO clients (firm_name,city, discount) VALUES
+('Лабиринт', 'Москва', 10),
+('Лабиринт', 'Казань', 15),
+('Буквоед', 'Тюмень', NULL),
+('Дельта', 'Нижний Новгород', 20),
+('Эпсилон', 'Москва', 8),
+('Дом книги', 'Уфа', 12),
+('Дом книги', 'Челябинск', 10),
+('Республика', 'Севастополь', NULL),
+('Мир книги', 'Сочи', 15),
+('Библио-Глобус', 'Вологда', 20),
+('Чук и Гик', 'Краснодар', 18),
+('Гиперион', 'Санкт-Петербург', 12),
+('Буквоед', 'Красноярск', NULL),
+('Буквоед', 'Нижний Новгород', 9),
+('Читай-город', 'Самара', 11),
+('Читай-город', 'Челябинск', 14),
+('Мир книги', 'Санкт-Петербург', 13),
+('Дом педагогической книги', 'Самара', 10),
+('Книжный магазин "Тау"', 'Калининград', 15),
+('Книжная лавка', 'Тюмень', NULL);
+
+INSERT INTO orders (id_book, id_client, amount, order_date) VALUES
+(1, 1, 30, '2024-01-01'),
+(2, 1, 45, '2024-01-02'),
+(20, 3, 65, '2024-01-03'),
+(4, 6, 34, '2024-01-04'),
+(16, 2, 100, '2024-01-05'),
+(7, 9, 137, '2024-01-06'),
+(4, 8, 70, '2024-01-07'),
+(3, 4, 25, '2024-01-08'),
+(5, 5, 27, '2024-01-09'),
+(13, 7, 54, '2024-01-10'),
+(8, 6, 42, '2024-01-11'),
+(9, 11, 35, '2024-01-12'),
+(11, 17, 77, '2024-01-13'),
+(14, 12, 43, '2024-01-14'),
+(6, 15, 62, '2024-01-15'),
+(17, 13, 32, '2024-01-16'),
+(10, 14, 47, '2024-01-17'),
+(7, 7, 133, '2024-01-18'),
+(18, 18, 65, '2024-01-19'),
+(12, 20, 34, '2024-01-20'),
+(5, 19, 76, '2024-01-08'),
+(15, 5, 87, '2024-01-01'),
+(13, 7, 98, '2024-01-07'),
+(11, 13, 23, '2024-01-10'),
+(19, 1, 34, '2024-01-16');
+
+
+
+SELECT * FROM clients WHERE firm_name LIKE 'Л%' OR firm_name LIKE 'Б%';
+
+SELECT book_name, author, publ_year FROM books WHERE publ_year > 2023;
+
+SELECT firm_name, city FROM clients WHERE city = 'Москва';
+
+SELECT firm_name, city, discount FROM clients WHERE discount >= 15;
+
+SELECT book_name, author, publisher FROM books WHERE publisher LIKE 'Махаон';
+
+SELECT publisher, COUNT(*) as book_count FROM books GROUP BY publisher;
+
+
+
+SELECT c.firm_name, o.order_date, c.discount FROM clients c JOIN orders o ON o.id_client = c.id_client WHERE c.discount > 10 AND o.order_date >= '2024-01-10';
+
+SELECT o.order_date, c.firm_name, b.book_name, ROUND((b.price * o.amount), 2) as price_wo_discount, c.discount as discount_percent, ROUND((c.discount / 100 * (b.price * o.amount)), 2) as discount,ROUND((CASE WHEN c.discount IS NOT NULL THEN ((b.price * o.amount) - (c.discount / 100 * (b.price * o.amount))) ELSE (b.price * o.amount) END), 2) as final_price FROM orders o JOIN clients c ON o.id_client = c.id_client JOIN books b ON b.id_book = o.id_book;
+
+SELECT c.firm_name, SUM(amount) as book_count FROM orders o JOIN clients c ON o.id_client = c.id_client GROUP BY c.id_client;
+
+SELECT o.id_order, c.firm_name, b.book_name, ROUND((o.amount * b.price), 2) as price_wo_discount FROM orders o JOIN books b ON o.id_book = b.id_book JOIN clients c ON o.id_client = c.id_client WHERE (o.amount * b.price) > 50000;
+
+SELECT c.firm_name, c.city, b.book_name, b.publ_year FROM clients c JOIN orders o ON c.id_client = o.id_client JOIN books b ON o.id_book = b.id_book WHERE b.publ_year > 2022;
+
+SELECT c.id_client, c.firm_name, c.city, COUNT(o.id_order) AS order_count FROM clients c JOIN orders o ON c.id_client = o.id_client GROUP BY c.id_client;
