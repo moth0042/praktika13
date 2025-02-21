@@ -12,6 +12,13 @@ for name in res.fetchall():
         print(name[0])
         tablesnames.append(name)
 
+def exitt():
+    confirm = messagebox.askyesno("Подтверждение выхода", "Вы уверены, что хотите выйти из программы?")
+    if confirm:
+        connection.commit()
+        connection.close()
+        root.destroy()
+
 def tables():
     for row in tree.get_children():
         tree.delete(row)
@@ -28,10 +35,41 @@ def tables():
     for i in rows:
         tree.insert('', tk.END, values=i)
 
+def add():
+    table_name = selector.get()
+    columns = [desc[0] for desc in cur.description]
+    def saveme():
+        values = [entry.get() for entry in entries]
+        try:
+            cur.execute(
+                f"INSERT INTO {table_name} ({', '.join(columns)}) VALUES ({', '.join(['?'] * len(values))})",
+                values
+            )
+            connection.commit()
+            add_window.destroy()
+            tables()
+        except sqlite3.Error as err:
+            messagebox.showerror("Ошибка", f"Не удалось добавить запись:\n{err}")
+    add_window = tk.Toplevel(root)
+    add_window.resizable(False, False)
+    add_window.iconphoto(False, icon)
+    style = ttk.Style(add_window)    
+    add_window.title("Добавить запись")
+    entries = []
+    for i, col in enumerate(columns):
+        ttk.Label(add_window, text=col).grid(row=i, column=0, padx=5, pady=5)
+        entry = ttk.Entry(add_window)
+        entry.grid(row=i, column=1, padx=5, pady=5)
+        entries.append(entry)
+    ttk.Button(add_window, text="Сохранить", command=saveme).grid(row=len(columns), column=0, columnspan=2, pady=10)
+
+
 root = tk.Tk()
 
 root.geometry("800x600")
 root.resizable(False, False)
+icon = tk.PhotoImage(file='icon.png')
+root.iconphoto(False, icon)
 
 frame1 = ttk.Frame(root)
 frame1.pack(fill=tk.X, padx=10, pady=10)
@@ -57,6 +95,11 @@ scroll2.config(command=tree.xview)
 butframe = ttk.Frame(root)
 butframe.pack(fill=tk.X, padx=10, pady=10)
 
+ttk.Button(butframe, text="Добавить", command=add).pack(side=tk.LEFT, padx=5)
+ttk.Button(butframe, text="Удалить", command=delete_record).pack(side=tk.LEFT, padx=5)
+ttk.Button(butframe, text="Редактировать", command=edit_record).pack(side=tk.LEFT, padx=5)
+ttk.Button(butframe, text="Дополнительно", command=open_action_window).pack(side=tk.RIGHT, padx=5)
+ttk.Button(butframe, text="Выход", command=exitt).pack(side=tk.RIGHT, padx=5)
 
 
 
@@ -65,10 +108,5 @@ butframe.pack(fill=tk.X, padx=10, pady=10)
 
 
 
-
-
-
-
-connection.commit()
-#connection.close()
+root.protocol('WM_DELETE_WINDOW', exitt)
 root.mainloop()
