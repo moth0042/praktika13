@@ -20,20 +20,23 @@ def exitt():
         root.destroy()
 
 def tables():
-    for row in tree.get_children():
-        tree.delete(row)
-    tree['columns'] = []
-    tree.heading("#0", text="", anchor=tk.W)
-    name = selector.get()
-    cur.execute(f"SELECT * FROM {name}")
-    rows = cur.fetchall()
-    columns = [desc[0] for desc in cur.description]        
-    tree['columns'] = columns
-    for col in columns:
-        tree.heading(col, text=col, anchor=tk.W)
-        tree.column(col, anchor=tk.W, minwidth=100, width=100)
-    for i in rows:
-        tree.insert('', tk.END, values=i)
+    try:
+        for row in tree.get_children():
+            tree.delete(row)
+        tree['columns'] = []
+        tree.heading("#0", text="", anchor=tk.W)
+        name = selector.get()
+        cur.execute(f"SELECT * FROM {name}")
+        rows = cur.fetchall()
+        columns = [desc[0] for desc in cur.description]        
+        tree['columns'] = columns
+        for col in columns:
+            tree.heading(col, text=col, anchor=tk.W)
+            tree.column(col, anchor=tk.W, minwidth=100, width=100)
+        for i in rows:
+            tree.insert('', tk.END, values=i)
+    except:
+        messagebox.showerror("Ошибка", "Выберите таблицу")
 
 def add():
     table_name = selector.get()
@@ -91,7 +94,6 @@ def edit():
         return
     record = tree.item(selected_item)['values']
     columns = [desc[0] for desc in cur.description]
-    
     def saveme():
         new_values = [entry.get() for entry in entries]
         set_clause = ", ".join([f"{col}=?" for col in columns])
@@ -106,12 +108,10 @@ def edit():
             tables()
         except sqlite3.Error as err:
             messagebox.showerror("Ошибка", f"Не удалось обновить запись:\n{err}")
-    
     edit_window = tk.Toplevel(root)
     edit_window.resizable(False, False)
     edit_window.iconphoto(False, icon)   
     edit_window.title("Редактировать запись")
-    
     entries = []
     for i, (col, value) in enumerate(zip(columns, record)):
         ttk.Label(edit_window, text=col).grid(row=i, column=0, padx=5, pady=5)
@@ -119,8 +119,43 @@ def edit():
         entry.insert(0, value)
         entry.grid(row=i, column=1, padx=5, pady=5)
         entries.append(entry)
-    
     ttk.Button(edit_window, text="Сохранить", command=saveme).grid(row=len(columns), column=0, columnspan=2, pady=10)
+
+queries = []
+file = open('запросы.txt', 'r').read().splitlines()
+for i in file:
+    if file.index(i) == 0 or file.index(i) % 2 == 0:
+        queries.append(i)
+def query():
+    def selectq():
+        try:
+            q = selector2.get()
+            select = file[file.index(q)+1]
+            for row in tree.get_children():
+                tree.delete(row)
+            tree['columns'] = []
+            tree.heading("#0", text="", anchor=tk.W)
+            cur.execute(select)
+            rows = cur.fetchall()
+            columns = [desc[0] for desc in cur.description]        
+            tree['columns'] = columns
+            for col in columns:
+                tree.heading(col, text=col, anchor=tk.W)
+                tree.column(col, anchor=tk.W, minwidth=100, width=100)
+            for i in rows:
+                tree.insert('', tk.END, values=i)
+            query_window.destroy()
+        except:
+            messagebox.showerror("Ошибка", "Выберите запрос")
+            return
+    query_window = tk.Toplevel(root)
+    query_window.resizable(False, False)
+    query_window.iconphoto(False, icon)   
+    query_window.title("Выбор запроса")
+    selector2 = ttk.Combobox(query_window, values=queries, state="readonly", width=100)
+    selector2.pack(side=tk.TOP, padx=5, pady=5)
+    selector2.current(0)
+    ttk.Button(query_window, text="Вывести", command=selectq).pack(side=tk.BOTTOM, padx=5, pady=10)    
 
 root = tk.Tk()
 
@@ -157,7 +192,8 @@ butframe.pack(fill=tk.X, padx=10, pady=10)
 ttk.Button(butframe, text="Добавить", command=add).pack(side=tk.LEFT, padx=5)
 ttk.Button(butframe, text="Удалить", command=delete).pack(side=tk.LEFT, padx=5)
 ttk.Button(butframe, text="Редактировать", command=edit).pack(side=tk.LEFT, padx=5)
-#ttk.Button(butframe, text="Дополнительно", command=open_action_window).pack(side=tk.RIGHT, padx=5)
+ttk.Button(butframe, text="Запросы", command=query).pack(side=tk.LEFT, padx=5)
+ttk.Button(frame1, width=3, text="⟲", command=tables).pack(side=tk.LEFT, padx=5, pady=5)
 ttk.Button(butframe, text="Выход", command=exitt).pack(side=tk.RIGHT, padx=5)
 
 

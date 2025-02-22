@@ -1,0 +1,24 @@
+Информация о клиентах, у которых название фирмы начинается на буквы «Л» или «Б»
+SELECT * FROM clients WHERE firm_name LIKE 'Л%' OR firm_name LIKE 'Б%';
+Информация о книгах изданных после 2023 года
+SELECT book_name, author, publ_year FROM books WHERE publ_year > 2023;
+Информация о клиентах из Москвы
+SELECT firm_name, city FROM clients WHERE city = 'Москва';
+Информация о клиентах со скидкой более 15%
+SELECT firm_name, city, discount FROM clients WHERE discount >= 15;
+Информация о книгах издательства Махаон
+SELECT book_name, author, publisher FROM books WHERE publisher LIKE 'Махаон';
+Сколько книжек от каждого издателя есть в наличии
+SELECT publisher, COUNT(*) as book_count FROM books GROUP BY publisher;
+Заказы клиентов, купивших книги со скидкой не менее 10% начиная с 10 января до текущей даты
+SELECT c.firm_name, o.order_date, c.discount FROM clients c JOIN orders o ON o.id_client = c.id_client WHERE c.discount > 10 AND o.order_date >= '2024-01-10';
+Вся информация о заказах, включая финальную цену
+SELECT o.order_date, c.firm_name, b.book_name, ROUND((b.price * o.amount), 2) as price_wo_discount, c.discount as discount_percent, ROUND((c.discount / 100 * (b.price * o.amount)), 2) as discount,ROUND((CASE WHEN c.discount IS NOT NULL THEN ((b.price * o.amount) - (c.discount / 100 * (b.price * o.amount))) ELSE (b.price * o.amount) END), 2) as final_price FROM orders o JOIN clients c ON o.id_client = c.id_client JOIN books b ON b.id_book = o.id_book;
+Сколько всего книжек заказывали клиенты
+SELECT c.firm_name, SUM(amount) as book_count FROM orders o JOIN clients c ON o.id_client = c.id_client GROUP BY c.id_client;
+Заказы, где цена выше 50000
+SELECT o.id_order, c.firm_name, b.book_name, ROUND((o.amount * b.price), 2) as price_wo_discount FROM orders o JOIN books b ON o.id_book = b.id_book JOIN clients c ON o.id_client = c.id_client WHERE (o.amount * b.price) > 50000;
+Клиенты, которые покупали книги, изданные после 2022 года
+SELECT c.firm_name, c.city, b.book_name, b.publ_year FROM clients c JOIN orders o ON c.id_client = o.id_client JOIN books b ON o.id_book = b.id_book WHERE b.publ_year > 2022;
+Количество заказов у каждого клиента
+SELECT c.id_client, c.firm_name, c.city, COUNT(o.id_order) AS order_count FROM clients c JOIN orders o ON c.id_client = o.id_client GROUP BY c.id_client;
