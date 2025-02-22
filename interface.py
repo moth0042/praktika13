@@ -63,11 +63,70 @@ def add():
         entries.append(entry)
     ttk.Button(add_window, text="Сохранить", command=saveme).grid(row=len(columns), column=0, columnspan=2, pady=10)
 
+def delete():
+    table_name = selector.get()
+    selected_item = tree.selection()
+    if not selected_item:
+        messagebox.showwarning("Предупреждение", "Выберите запись для удаления.")
+        return
+    record = tree.item(selected_item)['values']
+    columns = [desc[0] for desc in cur.description]
+    clause = " AND ".join([f"{col}=?" for col in columns])
+    confirm = messagebox.askyesno("Подтверждение", "Вы уверены, что хотите удалить эту запись?")
+    if not confirm:
+        return
+    try:
+        cur.execute(f"DELETE FROM {table_name} WHERE {clause}", record)
+        connection.commit()
+        tables()
+        messagebox.showinfo("Успех", "Запись успешно удалена.")
+    except sqlite3.Error as err:
+        messagebox.showerror("Ошибка", f"Не удалось удалить запись:\n{err}")
+
+def edit():
+    table_name = selector.get()
+    selected_item = tree.selection()
+    if not selected_item:
+        messagebox.showwarning("Предупреждение", "Выберите запись для редактирования.")
+        return
+    record = tree.item(selected_item)['values']
+    columns = [desc[0] for desc in cur.description]
+    
+    def saveme():
+        new_values = [entry.get() for entry in entries]
+        set_clause = ", ".join([f"{col}=?" for col in columns])
+        clause = " AND ".join([f"{col}=?" for col in columns])
+        try:
+            cur.execute(
+                f"UPDATE {table_name} SET {set_clause} WHERE {clause}",
+                new_values + record
+            )
+            connection.commit()
+            edit_window.destroy()
+            tables()
+        except sqlite3.Error as err:
+            messagebox.showerror("Ошибка", f"Не удалось обновить запись:\n{err}")
+    
+    edit_window = tk.Toplevel(root)
+    edit_window.resizable(False, False)
+    edit_window.iconphoto(False, icon)   
+    edit_window.title("Редактировать запись")
+    
+    entries = []
+    for i, (col, value) in enumerate(zip(columns, record)):
+        ttk.Label(edit_window, text=col).grid(row=i, column=0, padx=5, pady=5)
+        entry = ttk.Entry(edit_window)
+        entry.insert(0, value)
+        entry.grid(row=i, column=1, padx=5, pady=5)
+        entries.append(entry)
+    
+    ttk.Button(edit_window, text="Сохранить", command=saveme).grid(row=len(columns), column=0, columnspan=2, pady=10)
 
 root = tk.Tk()
 
 root.geometry("800x600")
 root.resizable(False, False)
+root.title("База данных")
 icon = tk.PhotoImage(file='icon.png')
 root.iconphoto(False, icon)
 
@@ -96,9 +155,9 @@ butframe = ttk.Frame(root)
 butframe.pack(fill=tk.X, padx=10, pady=10)
 
 ttk.Button(butframe, text="Добавить", command=add).pack(side=tk.LEFT, padx=5)
-ttk.Button(butframe, text="Удалить", command=delete_record).pack(side=tk.LEFT, padx=5)
-ttk.Button(butframe, text="Редактировать", command=edit_record).pack(side=tk.LEFT, padx=5)
-ttk.Button(butframe, text="Дополнительно", command=open_action_window).pack(side=tk.RIGHT, padx=5)
+ttk.Button(butframe, text="Удалить", command=delete).pack(side=tk.LEFT, padx=5)
+ttk.Button(butframe, text="Редактировать", command=edit).pack(side=tk.LEFT, padx=5)
+#ttk.Button(butframe, text="Дополнительно", command=open_action_window).pack(side=tk.RIGHT, padx=5)
 ttk.Button(butframe, text="Выход", command=exitt).pack(side=tk.RIGHT, padx=5)
 
 
